@@ -1,4 +1,4 @@
 include LICENSE
-include README.md
-include README.rst
-recursive-include docs *
+include djangodeletes/README.md
+include djangodeletes/README.rst
+recursive-include djangodeletes/docs *

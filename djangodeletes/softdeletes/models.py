@@ -3,7 +3,6 @@ from operator import attrgetter
 
 from django.db import models, router, transaction
 from django.db.models import signals
-from django.contrib import admin
 from django.utils import timezone
 
 
