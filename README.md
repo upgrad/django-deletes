@@ -1,8 +1,8 @@
 ## Soft Deletes for Django. 
 
 ### Installation Instructions
-1. pip install django-deletes # Doesnt work yet, clone the repo. 
-2. Add 'softdeletes' to INSTALLED_APPS in settings
+1. pip install djangodeletes 
+2. softdeletes will be available to import as ```from djangodeletes.softdeletes.models import Deletable```
 
 ### Usage
 1. Use Deletable class on the left most in the inhertance chain of the model. 
