@@ -2,7 +2,7 @@
 
 ### Installation Instructions
 1. pip install djangodeletes 
-2. softdeletes will be available to import as ```from djangodeletes.softdeletes.models import Deletable```
+2. softdeletes will be available to import as ```from djangodeletes.softdeletes.models import SoftDeletable```
 
 ### Usage
 1. Use Deletable class on the left most in the inhertance chain of the model. 
