@@ -1,7 +1,7 @@
 ## Soft Deletes for Django. 
 
 ### Installation Instructions
-1. pip install django-deletes
+1. pip install django-deletes # Doesnt work yet, clone the repo. 
 2. Add 'softdeletes' to INSTALLED_APPS in settings
 
 ### Usage
