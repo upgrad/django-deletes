@@ -6,7 +6,7 @@ from django.db.models import signals
 from django.utils import timezone
 
 
-class Deletable(models.Model):
+class SoftDeletable(models.Model):
     deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(blank=True, null=True, default=None)
 
