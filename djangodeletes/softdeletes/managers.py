@@ -1,10 +1,10 @@
-from .mixins import DeletableManagerMixin, DeletableQuerySetMixin
+from .mixins import SoftDeleteManagerMixin, SoftDeleteQuerySetMixin
 from django.db import models
 
 
-class DeletableQuerySet(DeletableQuerySetMixin, models.QuerySet):
+class SoftDeleteQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
     pass
 
 
-class DeletableManager(DeletableManagerMixin, models.Manager):
-    queryset_class = DeletableQuerySet
+class SoftDeleteManager(SoftDeleteManagerMixin, models.Manager):
+    queryset_class = SoftDeleteQuerySet

@@ -1,4 +1,4 @@
-class DeletableQuerySetMixin:
+class SoftDeleteQuerySetMixin:
 
     def delete(self):
         assert self.query.can_filter(), "Cannot use 'limit' or 'offset' with delete."
@@ -8,7 +8,7 @@ class DeletableQuerySetMixin:
     delete.alters_data = True
 
 
-class DeletableManagerMixin:
+class SoftDeleteManagerMixin:
     """
     A manager mixin that can be used to created soft deletable managers.
     the manager needs to define queryset_class, default value is DeletableQuerySet
