@@ -29,7 +29,7 @@ def MyModel(SoftDeletable, models.Model):
 ```
 # Create a custom  queryset that inherits from SoftDeleteQuerySetMixin
 
-def CustomQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
+class CustomQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
     
     def custom_queryset_method(self):
         ....
@@ -50,7 +50,7 @@ objects = SoftDeletaManager.from_queryset(CustomQuerySet)()
 # Create a custom manager that inherits from SoftDeleteQuerySetMixin
 # and set the queryset_class as SoftDeleteQuerySet
 
-def CustomModelManager(SoftDeleteManagerMixin, models.Manager):
+class CustomModelManager(SoftDeleteManagerMixin, models.Manager):
 	queryset_class = SoftDeleteQuerySet
     
     def custom_manager_method(self):
@@ -68,13 +68,13 @@ objects = CustomModelManager.from_queryset(SoftDeleteQuerySet)()
 
 
 ```
-def CustomQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
+class CustomQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
     
     def custom_queryset_method(self):
         ....
         ...
 
-def CustomModelManager(SoftDeleteManagerMixin, models.Manager):
+class CustomModelManager(SoftDeleteManagerMixin, models.Manager):
 	queryset_class = SoftDeleteQuerySet
     
     def custom_manager_method(self):
