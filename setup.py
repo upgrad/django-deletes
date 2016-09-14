@@ -1,20 +1,20 @@
 import os
 from setuptools import find_packages, setup
 
-with open(os.path.join(os.path.dirname(__file__), 'djangodeletes/README.rst')) as readme:
-    README = readme.read()
+#with open(os.path.join(os.path.dirname(__file__), 'djangodeletes/README.rst')) as readme:
+#    README = readme.read()
 
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='djangodeletes',
-    version='0.42',
+    version='0.43',
     packages=find_packages(),
     include_package_data=True,
     license='MIT License',  # example license
     description='A fully functional soft deletes (logical deletes) for django.',
-    long_description=README,
+    long_description='A fully functional soft deletes for django',
     url='https://github.com/upgrad/django-deletes',
     author='Ankit Mittal',
     author_email='ankit@upgrad.com',
