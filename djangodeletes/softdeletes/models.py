@@ -87,5 +87,21 @@ class SoftDeletable(models.Model):
     def _delete(self):
         self.deleted = True
         self.deleted_at = timezone.now()
-        # print('Deleting model {0} object with id {1}'.format(self._meta.model_name, self.id))
         self.save()
+
+    def restore(self):
+        """
+        Undeletes the object. Returns True if undeleted, False if it was already not deleted
+        """
+        if self.deleted:
+            self.deleted = False
+            self.deleted_at = None
+            self.save()
+            return True
+        return False
+
+    def full_restore(self):
+        """
+        Restores itself, as well as objects that might have been deleted along with it if cascade is the deletion strategy
+        """
+        pass
