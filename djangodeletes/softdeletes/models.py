@@ -32,7 +32,10 @@ class SoftDeletable(models.Model):
         self.collector.data = OrderedDict((model, self.collector.data[model])
                                   for model in sorted_models)
 
-    def delete(self, using=None, keep_parents=False):
+    def delete(self, using=None, keep_parents=False, time=None):
+        if time is None:
+            time = timezone.now()
+
         using = using or router.db_for_write(self.__class__, instance=self)
         deleted_counter = Counter()
         assert self._get_pk_val() is not None, (
@@ -58,7 +61,7 @@ class SoftDeletable(models.Model):
                 # TODO make sure the queryset delete has been made a soft delete
                 for qs_instance in qs:
                     deleted_counter.update([qs_instance._meta.model_name])
-                    qs_instance._delete()
+                    qs_instance._delete(time=time)
 
             # reverse instance collections
             #for instances in self.collector.data.items():
@@ -67,7 +70,7 @@ class SoftDeletable(models.Model):
             for model, instances in self.collector.data.items():
                 for instance in instances:
                     deleted_counter.update([instance._meta.model_name])
-                    instance._delete()
+                    instance._delete(time=time)
                     if not model._meta.auto_created:
                         signals.post_delete.send(
                             sender=model, instance=obj, using=using
@@ -84,28 +87,37 @@ class SoftDeletable(models.Model):
                 setattr(instance, model._meta.pk.attname, None)
         return sum(deleted_counter.values()), dict(deleted_counter)
 
-    def _delete(self):
+    def _delete(self, time=None):
         self.deleted = True
-        self.deleted_at = timezone.now()
+        if time is None:
+            time = timezone.now()
+        self.deleted_at = time
         self.save()
 
-    def restore(self):
+    def restore(self, time=None):
         """
         Undeletes the object. Returns True if undeleted, False if it was already not deleted
         """
         if self.deleted:
-            self.deleted = False
-            self.deleted_at = None
-            self.save()
-            return True
+            time = time if time else self.deleted_at
+            if time == self.deleted_at:
+                self.deleted = False
+                self.save()
+                return True
+            else:
+                return False
         return False
 
     def full_restore(self, using=None):
-        restore_counter = Counter()
         using = using or router.db_for_write(self.__class__, instance=self)
-        print('full restore')
+        restore_counter = Counter()
+        if self.deleted:
+            time = self.deleted_at
+        else:
+            return restore_counter
         self.collector = models.deletion.Collector(using=using)
         self.collector.collect([self])
+        
 
         for model, instances in self.collector.data.items():
             instances_to_delete = sorted(instances, key=attrgetter("pk"))
@@ -116,12 +128,12 @@ class SoftDeletable(models.Model):
             # TODO make sure the queryset delete has been made a soft delete
             for qs_instance in qs:
                 restore_counter.update([qs_instance._meta.model_name])
-                qs_instance.restore()
+                qs_instance.restore(time=time)
 
         for model, instances in self.collector.data.items():
             for instance in instances:
                 restore_counter.update([instance._meta.model_name])
-                instance.restore()
+                instance.restore(time=time)
 
         return sum(restore_counter.values()), dict(restore_counter)
 
