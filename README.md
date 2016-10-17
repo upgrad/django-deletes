@@ -1,4 +1,8 @@
 ## Soft Deletes for Django (in beta)
+
+Simplest soft delete library for Django.
+
+
 Supported Django versions >= 1.8
 Supported Python versions >= 3.3
 
@@ -6,8 +10,7 @@ Supported Python versions >= 3.3
 1. pip install djangodeletes 
 
 
-### Usage
-####To make your model soft deletable : 
+### Basic Usage
 
 ```
 from djangodeletes.softdelete import SoftDeletable, SoftDeletaManager, SoftDeleteQuerySet
@@ -24,73 +27,34 @@ class MyModel(SoftDeletable, models.Model):
         ...
 ```
 
-#### To use a custom queryset with your soft deletable model
+### Background
 
-```
-# Create a custom  queryset that inherits from SoftDeleteQuerySetMixin
+### APIs
 
-class CustomQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
-    
-    def custom_queryset_method(self):
-        ....
-        ...
+1. Delete - All model deletes and queryset deletes will result in soft delete. Default option is Cascade. All related objects will also get softdeleted. This behaviour exactly maps with what happens with real delete
 
-# use this queryset in your model
+2. Fetching / filtering a queryset - Soft deleted objects will remain hidden from all queries. 
 
-objects = SoftDeletaManager.from_queryset(CustomQuerySet)()
+2. Getting single object - if the specific object is soft deleted, it would raise normal exception of ObjectDoesNotExist
 
+3. Fetching deleted objects - Following options are available. 
 
-```
+    a. Model.objects.get_with_deleted(pk=12)  # similar to get operation ignores softdeletes
 
+    b. Model.objects.only_deleted()  - All the deleted objects
 
+    c. Model.objects.all_with_deleted() - A queryset including deleted objects
 
-#### To use a custom manager with your soft deletable model
+    d. Model.objects.filter(pk=55) - Only this filter query ignores the deleted flag and returns then object even if that is deleted
 
-```
-# Create a custom manager that inherits from SoftDeleteQuerySetMixin
-# and set the queryset_class as SoftDeleteQuerySet
+    d. Model.objects.filter(pk=55) - Only this filter query ignores the deleted flag and returns then object even if that is deleted
 
-class CustomModelManager(SoftDeleteManagerMixin, models.Manager):
-	queryset_class = SoftDeleteQuerySet
-    
-    def custom_manager_method(self):
-        ....
-        ...
+* For Advanced usage, look at docs/usage.md
 
-# use this manager in your model
+4. Restore an object
+    a. something.resotre() - A model method which restores the object.
 
-objects = CustomModelManager.from_queryset(SoftDeleteQuerySet)()
-
-```
-
-
-#### To use a custom manager and custom queryset both with your model
-
-
-```
-class CustomQuerySet(SoftDeleteQuerySetMixin, models.QuerySet):
-    
-    def custom_queryset_method(self):
-        ....
-        ...
-
-class CustomModelManager(SoftDeleteManagerMixin, models.Manager):
-	queryset_class = SoftDeleteQuerySet
-    
-    def custom_manager_method(self):
-        ....
-        ...
-
-# use this manager in your model
-
-objects = CustomModelManager.from_queryset(CustomQuerySet)()
-
-```
-
-
-1. Use Deletable class on the left most in the inhertance chain of the model. 
-2. Use objects = DeletableManager.from_queryset(DeletableQuerySet)()
-3. If you want to use a custom manager or a custom Queryset, make sure your custom manager inherits from DeletableManagerMixin and your custom QuerySet inherits from Deletable QuerySetMixin
+    b. something.full_resore() - A model method which restores the object and all other related objects which were deleted along with that operation.
 
 
 ### Caution
