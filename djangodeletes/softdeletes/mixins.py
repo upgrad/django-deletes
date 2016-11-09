@@ -16,7 +16,7 @@ class SoftDeleteManagerMixin:
 
     def __init__(self):
         if not self.queryset_class:
-            raise ReferenceError('queryset class not defined in manager') 
+            raise ReferenceError('queryset class not defined in manager')
         super().__init__()
 
     def get_queryset(self):
@@ -42,5 +42,4 @@ class SoftDeleteManagerMixin:
         return self.get_queryset().filter(*args, **kwargs)
 
     def get_with_deleted(self, *args, **kwargs):
-         return self.all_with_deleted().get(*args, **kwargs)
-
+        return self.all_with_deleted().get(*args, **kwargs)
