@@ -30,7 +30,7 @@ class SoftDeletable(models.Model):
             if not found:
                 return
         self.collector.data = OrderedDict((model, self.collector.data[model])
-                                  for model in sorted_models)
+                                          for model in sorted_models)
 
     def delete(self, using=None, keep_parents=False, time=None):
         if time is None:
@@ -39,9 +39,9 @@ class SoftDeletable(models.Model):
         using = using or router.db_for_write(self.__class__, instance=self)
         deleted_counter = Counter()
         assert self._get_pk_val() is not None, (
-                "{0} object can't be deleted because its {1} attribute is set to None.".format(self._meta.object_name, self._meta.pk.attname))
+            "{0} object can't be deleted because its {1} attribute is set to None.".format(self._meta.object_name, self._meta.pk.attname))
 
-        self.collector = models.deletion.Collector(using=using) 
+        self.collector = models.deletion.Collector(using=using)
         self.collector.collect([self], keep_parents=keep_parents)
 
         # sort instance collections
@@ -64,7 +64,7 @@ class SoftDeletable(models.Model):
                     qs_instance._delete(time=time)
 
             # reverse instance collections
-            #for instances in self.collector.data.items():
+            # for instances in self.collector.data.items():
             #    instances.reverse()
 
             for model, instances in self.collector.data.items():
@@ -117,7 +117,6 @@ class SoftDeletable(models.Model):
             return restore_counter
         self.collector = models.deletion.Collector(using=using)
         self.collector.collect([self])
-        
 
         for model, instances in self.collector.data.items():
             instances_to_delete = sorted(instances, key=attrgetter("pk"))
@@ -140,5 +139,8 @@ class SoftDeletable(models.Model):
         """
         Restores itself, as well as objects that might have been deleted along with it if cascade is the deletion strategy
         """
-        self.collector = models.deletion.Collector(using=using) 
+        self.collector = models.deletion.Collector(using=using)
         self.collector.collect([self], keep_parents=keep_parents)
+
+    def hard_delete(self, *args, *kwargs):
+        super().delete(*args, **kwargs)
