@@ -32,7 +32,9 @@ class SoftDeletable(models.Model):
         self.collector.data = OrderedDict((model, self.collector.data[model])
                                   for model in sorted_models)
 
-    def delete(self, using=None, keep_parents=False, time=None):
+    def delete(self, using=None, keep_parents=False, time=None, final=False):
+        if final:
+            super().delete()
         if time is None:
             time = timezone.now()
 
@@ -63,9 +65,6 @@ class SoftDeletable(models.Model):
                     deleted_counter.update([qs_instance._meta.model_name])
                     qs_instance._delete(time=time)
 
-            # reverse instance collections
-            #for instances in self.collector.data.items():
-            #    instances.reverse()
 
             for model, instances in self.collector.data.items():
                 for instance in instances:
