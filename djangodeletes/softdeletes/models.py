@@ -35,6 +35,7 @@ class SoftDeletable(models.Model):
     def delete(self, using=None, keep_parents=False, time=None, final=False):
         if final:
             super().delete()
+            return None
         if time is None:
             time = timezone.now()
 
